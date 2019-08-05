@@ -1,0 +1,21 @@
+[
+	{
+		"chave": "chaveTeste1",
+		"valor": "valorTeste1"
+	},
+	{
+		"chave": "chaveTeste2",
+		"valor": "valorTeste2"
+	},
+	{
+		"chave": "chaveTest3",
+		"valor": "valorTeste3"
+	},
+	{
+		"chave": "mysqldb",
+		"valor": "server=127.0.0.1;uid=root;pwd=masterkey; database=dbbolada;"
+	},
+
+	
+
+]
