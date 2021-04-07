@@ -1,0 +1,537 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "SProfTI API",
+    "description" : "Seletor de Profissinais de TI API",
+    "contact" : {
+      "email" : "rubensagnelo@gmail.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/rubensagnelo/sprotiapi/1.0.0",
+    "description" : "SwaggerHub API Auto Mocking"
+  } ],
+  "tags" : [ {
+    "name" : "carteira",
+    "description" : "Operacoes relacionadas a carteira de profissionais selecionados do SProfTI"
+  }, {
+    "name" : "usuarioplataforma",
+    "description" : "Operacoes relacionadas aos usuários das plataformas do GitHube e SteckOverflow que podem ser selecionados para uma carteira do SProfTI"
+  }, {
+    "name" : "carteirausuario",
+    "description" : "Operações relacionadas aos usuário de plataforma em uma carteira do SProfTI"
+  } ],
+  "paths" : {
+    "/carteira" : {
+      "get" : {
+        "tags" : [ "carteira" ],
+        "summary" : "Buscar todas as carteiras de selecao de profissionais",
+        "description" : "Buscar todas as Carteira de profissionais",
+        "operationId" : "BuscarTodasAsCarteiraDeProfissionais",
+        "parameters" : [ {
+          "name" : "nome",
+          "in" : "query",
+          "description" : "nome ou parte do nome da carteira para consultar as carteiras",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "registros",
+          "in" : "query",
+          "description" : "quantidades de registros",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "resultados da consulta",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/carteiraItem"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "valor do parametro inválido"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "carteira" ],
+        "summary" : "Inclui uma nova carteira de selecao de profissionais",
+        "description" : "Inclui uma nova carteira de selecao de profissionais na lista de carteiras",
+        "operationId" : "addCarteira",
+        "requestBody" : {
+          "description" : "Item Carteira de profissional(CarteiraItem) para inclusao",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/carteiraItem"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "carteira incluida",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/carteiraItemresponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "parametro ou estrutura de entrada inálida"
+          },
+          "409" : {
+            "description" : "carteira já existente (nome da carteira ja existe)"
+          }
+        }
+      }
+    },
+    "/carteira/{idcarteira}" : {
+      "get" : {
+        "tags" : [ "carteira" ],
+        "summary" : "Consulta uma carteira de selecao de profissionais pelo identificador da carteira",
+        "description" : "Consulta uma carteira de selecao de profissionais pelo identificador da carteira",
+        "parameters" : [ {
+          "name" : "idcarteira",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "resultados da consulta",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/carteiraItem"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "valor do parametro inválido"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "carteira" ],
+        "summary" : "Atualiza os dados de uma carteira",
+        "parameters" : [ {
+          "name" : "idcarteira",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Item Carteira de profissional(CarteiraItem) para atualizacao (obs:idcarteira no body será ignorado)",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/carteiraItem"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "400" : {
+            "description" : "Identificador da carteira fornecido é inválido"
+          },
+          "404" : {
+            "description" : "carteira nao encontrada"
+          },
+          "405" : {
+            "description" : "Exceção na autalização dos dados da carteira"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "carteira" ],
+        "summary" : "Exclui uma carteira pelo Identificador da carteira",
+        "description" : "Exclui uma carteira pelo Identificador da carteira",
+        "parameters" : [ {
+          "name" : "idcarteira",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "carteira excluída"
+          },
+          "400" : {
+            "description" : "id da carteira inálida"
+          },
+          "404" : {
+            "description" : "carteira nao encontrada"
+          }
+        }
+      }
+    },
+    "/usuarioplataforma/{idplataforma}" : {
+      "get" : {
+        "tags" : [ "usuarioplataforma" ],
+        "summary" : "Consulta uma carteiraum usuários pelo identificador da plataforma",
+        "description" : "Consulta usuários pelo identificador da plataforma ( dados retornados pela API da plataforma GitHub ou StackOverflow)",
+        "parameters" : [ {
+          "name" : "idplataforma",
+          "in" : "path",
+          "description" : "idIdentificador da plataforma (GitHub ou StackOverflow)",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "resultados da consulta",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/usuarioplataformaitem"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "valor do parametro inválido"
+          }
+        }
+      }
+    },
+    "/usuarioplataforma/{idplataforma}/{idUsuarioplataforma}" : {
+      "get" : {
+        "tags" : [ "usuarioplataforma" ],
+        "summary" : "Busca um usuário de uma plataforma",
+        "description" : "Busca um usuário de uma plataforma (Github, SteckOverflow)",
+        "operationId" : "Buscarusuariopnaplataforma",
+        "parameters" : [ {
+          "name" : "idplataforma",
+          "in" : "path",
+          "description" : "id do usuário na plataforma (user_id no StackOverflow e id no GitHub)",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "idUsuarioplataforma",
+          "in" : "path",
+          "description" : "quantidades de registros",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "resultados da consulta",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/usuarioplataformaitem"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "valor do parametro inválido"
+          }
+        }
+      }
+    },
+    "/carteirausuario" : {
+      "post" : {
+        "tags" : [ "carteirausuario" ],
+        "summary" : "Inclui um usuário de plataforma na carteira de selecao de profissionais do SProfTI",
+        "description" : "Inclui um usuário de plataforma na carteira de selecao de profissionais do SProfTI",
+        "operationId" : "Addusuarioplataformanacarteira",
+        "requestBody" : {
+          "description" : "Usuário da plataforma (CarteiraItem) para  inclusao na carteira do SProfTI",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/carteirausuarioitem"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "usuário da plataforma incluido na carteira"
+          },
+          "400" : {
+            "description" : "parametro ou estrutura de entrada inálida"
+          },
+          "409" : {
+            "description" : "usuário da plataforma já existente na carteira (nome da carteira ja existe)"
+          }
+        }
+      }
+    },
+    "/carteirausuario/{idCarteira}" : {
+      "get" : {
+        "tags" : [ "carteirausuario" ],
+        "summary" : "Buscar usuários de plataforma em uma carteira  do SProfTI",
+        "description" : "Buscar um usuário de plataforma cadastrado em uma carteira do SProfTI",
+        "operationId" : "Buscarusuariosplataformadacarteira",
+        "parameters" : [ {
+          "name" : "idCarteira",
+          "in" : "path",
+          "description" : "Identificador da carteira para buscar os usuários de plataformas cadastrados na carteira do SProfTI",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "resultados da consulta",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/carteirausuariodetalhado"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "valor do parametro inválido"
+          }
+        }
+      }
+    },
+    "/carteiraUsuario/{idcarteira}/{idcarteiraUsuario}/{idplataforma}" : {
+      "delete" : {
+        "tags" : [ "carteirausuario" ],
+        "summary" : "Exclui um usuário de plataforma em uma carteira  do SProfTI",
+        "description" : "Exclui um usuário de plataforma em uma carteira  do SProfTI",
+        "parameters" : [ {
+          "name" : "idcarteira",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer"
+          }
+        }, {
+          "name" : "idcarteiraUsuario",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer"
+          }
+        }, {
+          "name" : "idplataforma",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "usuário de plataforma excluído da carteira"
+          },
+          "400" : {
+            "description" : "usuário de plataforma da carteira inálido"
+          },
+          "404" : {
+            "description" : "usuário de plataforma nao encontrado na carteira"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "carteiraItem" : {
+        "required" : [ "dataatualizacao", "descricao", "idcarteira", "titulo" ],
+        "type" : "object",
+        "properties" : {
+          "idcarteira" : {
+            "type" : "integer",
+            "example" : 123
+          },
+          "titulo" : {
+            "type" : "string",
+            "example" : "Desenvolvedor Android 4"
+          },
+          "descrcricao" : {
+            "type" : "string",
+            "example" : "Desenvolvedores Android iniciante (trainee)"
+          },
+          "dataatualizaco" : {
+            "type" : "string",
+            "format" : "date-time",
+            "example" : "2016-08-29T09:12:33.001Z"
+          }
+        }
+      },
+      "carteiraItemresponse" : {
+        "type" : "object",
+        "properties" : {
+          "idcarteira" : {
+            "type" : "integer",
+            "example" : 123
+          }
+        }
+      },
+      "usuarioplataformaitem" : {
+        "required" : [ "idplataforma", "idusuarioplatafaorma", "nome" ],
+        "type" : "object",
+        "properties" : {
+          "idplataforma" : {
+            "type" : "integer",
+            "description" : "Identificado do usuário na plataforma retornado pela API da plataforma",
+            "example" : 123
+          },
+          "idusuarioplatafaorma" : {
+            "type" : "string",
+            "description" : "Identificador do usuário na plataforma (user_id no StackOverflow e id no GitHub)",
+            "example" : "12345"
+          },
+          "nome" : {
+            "type" : "string",
+            "description" : "nome do usuáriodescrito na plataforma",
+            "example" : "João da Silva"
+          },
+          "avatar" : {
+            "type" : "string",
+            "description" : "url da imagem do avatar  (profile_image no StackOverflow e avatar_url no GitHub",
+            "example" : "https://github.com/images/error/octocat_happy.gif"
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "e-mail do usuário da",
+            "example" : "octocat@github.com"
+          },
+          "reputacao" : {
+            "type" : "integer",
+            "description" : "valor resultante de formula que cruza alguns dados do usuários nas respectivas plataformas",
+            "example" : 2041
+          }
+        }
+      },
+      "carteirausuarioitem" : {
+        "required" : [ "idCarteira", "idplataforma", "idusuarioplataforma" ],
+        "type" : "object",
+        "properties" : {
+          "idCarteira" : {
+            "type" : "integer",
+            "description" : "Identificador da carteira",
+            "example" : 123
+          },
+          "idplataforma" : {
+            "type" : "integer",
+            "description" : "Identificador da plataforma",
+            "example" : 1
+          },
+          "idusuarioplataforma" : {
+            "type" : "string",
+            "description" : "IIdentificado do usuário na plataforma retornado pela API da plataforma",
+            "example" : "1204"
+          }
+        }
+      },
+      "carteirausuariodetalhado" : {
+        "type" : "object",
+        "properties" : {
+          "idCarteira" : {
+            "type" : "integer",
+            "description" : "Identificador da carteira",
+            "example" : 123
+          },
+          "idplataforma" : {
+            "type" : "integer",
+            "description" : "Identificador da plataforma",
+            "example" : 1
+          },
+          "idusuarioplataforma" : {
+            "type" : "string",
+            "description" : "IIdentificado do usuário na plataforma retornado pela API da plataforma",
+            "example" : "1204"
+          },
+          "nome" : {
+            "type" : "string",
+            "description" : "nome do usuáriodescrito na plataforma",
+            "example" : "João da Silva"
+          },
+          "avatar" : {
+            "type" : "string",
+            "description" : "url da imagem do avatar  (profile_image no StackOverflow e avatar_url no GitHub",
+            "example" : "https://github.com/images/error/octocat_happy.gif"
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "e-mail do usuário da",
+            "example" : "octocat@github.com"
+          },
+          "reputacao" : {
+            "type" : "integer",
+            "description" : "valor resultante de formula que cruza alguns dados do usuários nas respectivas plataformas",
+            "example" : 2041
+          }
+        }
+      }
+    }
+  }
+}
